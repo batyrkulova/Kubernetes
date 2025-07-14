@@ -1,0 +1,2 @@
+NAMESPACE           NAME                              CPU(cores)   MEMORY(bytes)   
+kube-system         cilium-qpmsq                      21m          322Mi           
