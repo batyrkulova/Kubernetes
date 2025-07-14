@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  name: app1-dev
+spec: {}
+status: {}
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Namespace","metadata":{"annotations":{},"creationTimestamp":null,"name":"app1-dev"},"spec":{},"status":{}}
+  creationTimestamp: "2025-07-14T19:03:25Z"
+  labels:
+    app: app1
+    env: dev
+    kubernetes.io/metadata.name: app1-dev
+  name: app1-dev
+  resourceVersion: "1993293"
+  uid: ea44911e-a42f-434e-ad5e-803ac1671e31
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
