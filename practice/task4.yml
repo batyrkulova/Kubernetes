@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: multi-tier
+---
+apiVersion: v1
+data:
+  APP_COLOR: blue
+  APP_MODE: production
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: web-config
+  namespace: multi-tier
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: web-app
+  name: web-app
+  namespace: multi-tier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-app
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: web-app
+    spec:
+      containers:
+      - image: nginx:1.25
+        name: nginx
+        env: 
+        - name: BUILD_ID
+          value: "1.0"
+        - name: APP_COLOR
+          valueFrom: 
+            configMapKeyRef:
+              name: APP_COLOR
+        ports:
+        - containerPort: 80

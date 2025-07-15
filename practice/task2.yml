@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: app-cache
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: web
+  name: redis-app
+  namespace: app-cache
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: web
+    spec:
+      containers:
+      - image: redis:7
+        name: redis
+        env: 
+        - name: REDIS_PASSWORD
+          value: secure123 
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: 500m
+          
+          
+          
+        

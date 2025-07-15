@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: web
+  name: init-nginx
+  namespace: app-cache
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: init-nginx
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: init-nginx
+    spec:
+      containers:
+      - image: nginx:1.25
+        name: nginx
+      initContainers:
+      - name: busybox
+        image: busybox:latest
+        command: [ "sh", "-c", "echo Initializing, sleep 10"]
+        env: 
+        - name: Stage
+          value: prod
+        ports:
+        - containerPort: 80
+
