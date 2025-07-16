@@ -9,14 +9,12 @@ data:
   APP_MODE: production
 kind: ConfigMap
 metadata:
-  creationTimestamp: null
   name: web-config
-  namespace: multi-tier
+  namespace: "multi-tier"
 ---
 apiVersion: apps/v1
 kind: Deployment
-metadata:
-  creationTimestamp: null
+metadata: 
   labels:
     app: web-app
   name: web-app
@@ -26,7 +24,11 @@ spec:
   selector:
     matchLabels:
       app: web-app
-  strategy: {}
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate: 
+      maxSurge: 2
+      maxUnavailable: 1
   template:
     metadata:
       creationTimestamp: null
@@ -36,12 +38,40 @@ spec:
       containers:
       - image: nginx:1.25
         name: nginx
+      initContainers:
+      - name: busybox
+        image: busybox:labels
+        command: ["echo Init Complete && sleep5"]
+        restartPolicy: Always
         env: 
         - name: BUILD_ID
           value: "1.0"
         - name: APP_COLOR
           valueFrom: 
             configMapKeyRef:
-              name: APP_COLOR
+              name: web-config
+              key: APP_COLOR
+        - name: APP_MODE
+          valueFrom: 
+            configMapKeyRef:
+              name: web-config
+              key: APP_MODE
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+        resources:
+          requests: 
+            cpu: 100m
+            memory: 123Mi
+          limits: 
+            cpu: 200m
+            memory: 256Mi     
         ports:
         - containerPort: 80
